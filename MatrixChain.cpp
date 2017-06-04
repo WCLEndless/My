@@ -88,9 +88,52 @@ void TraceBack(int **s,int i,int j)
 	cout << "Matrix A " << i << " * " << s[i][j] << " and ";
 	cout << "Matrix A " << s[i][j] + 1 << " * " << j << endl;
 }
+int MatrixChain2(int *p, int **c, int n)
+{
+	int i, j;
+	for (i = 1; i <= n; ++i) c[i][i] = 0;
+	for (int len = 2; len <= n; ++len)
+	{
+		for (i = 1; i <= n - len + 1; ++i)
+		{
+			j = i + len - 1;
+			c[i][j] = c[i][i] + c[i + 1][j] + p[i - 1] * p[i] * p[j];
+			for (int k = i + 1; k<j; ++k)
+			{
+				int t = c[i][k] + c[k + 1][j] + p[i - 1] * p[k] * p[j];
+				if (c[i][j] > t)
+				{
+					c[i][j] = t;
+				}
+			}
+			Print2Array(c, n + 1, n + 1);
+		}
+		cout << endl;
+	}
+	return c[1][n];
+}
+/*
+//最长字段和简单实现
+int MaxSum(int *a, int n)
+{
+	if (a == NULL || n == 0)
+		return 0;
+	int num = 0;
+	int b = 0;
+	for (int i = 0; i < n; i++)
+	{
+		if (b > 0)
+			b += a[i];
+		else
+			b = a[i];
+		if (b > 0)num = b;
+	} 
+	return num;
+}*/
+
 int main()
 {
-	int p[SIZE + 1] = { 30, 35, 15, 5, 10, 20, 25 };
+	int p[SIZE + 1] = { 30, 35, 15, 5, 10, 20,-9};
 
 	int ** c = Get2Array(SIZE + 1, SIZE + 1);
 	int **s = Get2Array(SIZE + 1, SIZE + 1);
@@ -101,5 +144,7 @@ int main()
 	cout << "消除了重复计算：" << MatrixChain(p, 1, SIZE, c, s) << endl;
 	cout << num1 << endl;
 	TraceBack(s, 1, SIZE);
+
+	//cout << "最大字段和：" << MaxSum(p, SIZE + 1) << endl;
 	return 0;
 }
